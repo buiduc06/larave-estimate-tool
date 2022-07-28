@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 
 /**
  * Class Layout
@@ -17,21 +16,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Layout extends Model
 {
+
     use SoftDeletes;
 
-
     public $table = 'layouts';
-    
 
     protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
         'id',
         'content',
         'user_id',
-        'file_path'
+        'file_path',
+        'name'
     ];
 
     /**
@@ -40,9 +37,11 @@ class Layout extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
-        'content' => 'string',
-        'user_id' => 'integer'
+        'id'        => 'integer',
+        'content'   => 'string',
+        'name'      => 'string',
+        'file_path' => 'string',
+        'user_id'   => 'integer'
     ];
 
     /**
@@ -52,8 +51,13 @@ class Layout extends Model
      */
     public static $rules = [
         'layout_file' => 'required|file',
-        
+        'name'        => 'nullable|max:250',
+
     ];
 
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

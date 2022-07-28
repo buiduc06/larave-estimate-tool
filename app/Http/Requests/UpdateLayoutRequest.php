@@ -25,7 +25,8 @@ class UpdateLayoutRequest extends FormRequest
     public function rules()
     {
         $rules = Layout::$rules;
-        
+        $rules['layout_file'] = 'nullable|file';
+
         return $rules;
     }
 }

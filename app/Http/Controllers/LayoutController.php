@@ -53,11 +53,11 @@ class LayoutController extends AppBaseController
     public function store(CreateLayoutRequest $request)
     {
         $input = $request->all();
-        
+
         $file_name = \Storage::put('layouts', $request->file('layout_file'));
 
         $content = \Storage::get($file_name);
-        
+
         $data = ['file_path' => $file_name, 'user_id' => auth()->user()->id, 'content' => $content] + $input;
 
         $layout = $this->layoutRepository->create($data);
@@ -101,7 +101,7 @@ class LayoutController extends AppBaseController
             <script src="'.url('/tools/tool.js').'"></script>
             </body>',
         ]);
-        
+
 
         return view('layouts.show')
         ->with('layout', $layout)->with('content', $contents);
@@ -146,12 +146,16 @@ class LayoutController extends AppBaseController
         }
 
         $input = $request->all();
+        $data_file = [];
 
-        $file_name = \Storage::put('layouts', $request->file('layout_file'));
+        if ($request->hasFile('layout_file')) {
+            $file_name = \Storage::put('layouts', $request->file('layout_file'));
+            $content = \Storage::get($file_name);
+            $data_file = ['file_path' => $file_name, 'content' => $content];
+        }
 
-        $content = \Storage::get($file_name);
-        
-        $data = ['file_path' => $file_name, 'user_id' => auth()->user()->id, 'content' => $content] + $input;
+
+        $data = $data_file + ['user_id' => auth()->user()->id] + $input;
 
         $layout = $this->layoutRepository->update($data, $id);
 

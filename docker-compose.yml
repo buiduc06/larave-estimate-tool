@@ -16,7 +16,7 @@ services:
       - mysql57:/var/lib/mysql
 
   web:
-    image: webdevops/php-nginx:8.0-alpine
+    build: docker/nginx
     ports:
       - 8081:80
     volumes:

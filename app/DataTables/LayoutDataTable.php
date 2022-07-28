@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Layout;
+use App\Models\User;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 
@@ -18,7 +19,17 @@ class LayoutDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'layouts.datatables_actions');
+        return $dataTable
+            ->addColumn('action', 'layouts.datatables_actions')
+            ->editColumn('user_id', function($layout) {
+                return optional($layout->user)->name;
+            })
+            ->editColumn('created_at', function($layout) {
+                return $layout->created_at->format('Y/m/d H:i:s');
+            })
+            ->editColumn('updated_at', function($layout) {
+                return $layout->updated_at->format('Y/m/d H:i:s');
+            });
     }
 
     /**
@@ -65,10 +76,12 @@ class LayoutDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'id',
-            'user_id',
-            'created_at' => ['searchable' => false],
-            'updated_at' => ['searchable' => false]
+            'id' => ['title' => 'No.'],
+            'name' => ['title' => 'name'],
+            'file_path' => ['title' => 'file'],
+            'user_id' => ['title' => 'user'],
+            'created_at' => ['searchable' => false, 'title' => 'created at'],
+            'updated_at' => ['searchable' => false, 'title' => 'updated at']
         ];
     }
 
